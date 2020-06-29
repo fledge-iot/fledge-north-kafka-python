@@ -10,9 +10,9 @@ pip install requirements.txt
 
 Create a directory called kafka_north for your plugin  
   
-/usr/local/fledge/python/foglamp/python/plugins/north/kafka_north
+/usr/local/fledge/python/fledge/python/plugins/north/kafka_north
 
-Copy the __init__.py and kafka_north.py files to /usr/local/foglamp/python/foglamp/python/plugins/north/kafka_north.py
+Copy the __init__.py and kafka_north.py files to /usr/local/fledge/python/fledge/python/plugins/north/kafka_north.py
 
 
 ## Testing

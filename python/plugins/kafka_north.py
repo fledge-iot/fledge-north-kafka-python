@@ -8,8 +8,8 @@ import json
 import uuid
 import logging
 
-from foglamp.common import logger
-from foglamp.plugins.north.common.common import *
+from fledge.common import logger
+from fledge.plugins.north.common.common import *
 
 __author__ = "Rob Raesemann"
 __copyright__ = "Copyright (c) 2019 Raesemann Enterprises"
