@@ -7,7 +7,7 @@ import logging
 import sys
 
 BOOTSTRAP_SERVERS = ['3.209.55.41:9092']
-KAFKA_TOPIC = 'foglamp-testing'
+KAFKA_TOPIC = 'fledge-testing'
 
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(logging.DEBUG)
@@ -90,7 +90,7 @@ class KafkaNorthPlugin(object):
     async def _send(self, producer, payload):
         """ Send the payload, using provided producer """
        
-        producer.send('foglamp-testing', value=payload).add_errback(self.kafka_error)
+        producer.send('fledge-testing', value=payload).add_errback(self.kafka_error)
         producer.flush()
 
 
