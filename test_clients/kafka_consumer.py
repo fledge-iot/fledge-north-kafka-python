@@ -4,7 +4,7 @@ import logging
 import sys
 
 BOOTSTRAP_SERVERS = ['3.209.55.41:9092']
-KAFKA_TOPIC = 'foglamp-testing'
+KAFKA_TOPIC = 'fledge-testing'
 
 
 _LOGGER = logging.getLogger(__name__)
