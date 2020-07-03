@@ -6,16 +6,11 @@ This plugin is a good example of a North plugin built in Python. There is also a
 
 ## Installation
 
-pip install requirements.txt
-
-Create a directory called kafka_north for your plugin  
-  
-/usr/local/fledge/python/fledge/python/plugins/north/kafka_north
-
-Copy the __init__.py and kafka_north.py files to /usr/local/fledge/python/fledge/python/plugins/north/kafka_north.py
-
+Copy the python/fledge/plugins/north/kafka_python directory to /usr/local/fledge/python/fledge/python/plugins/north/
+pip3 install -Ir python/requirements-kafka_python.txt
 
 ## Testing
+
 Two test client applications are included in the test_clients directory. Set the BOOTSTRAP_SERVERS and KAFKA_TOPIC variables and you should be able to test the connection to your Kafka server.
 
 

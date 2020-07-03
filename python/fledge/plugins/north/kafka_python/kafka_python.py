@@ -5,28 +5,25 @@ from kafka import KafkaProducer
 from kafka.errors import KafkaError
 import asyncio
 import json
-import uuid
-import logging
 
 from fledge.common import logger
 from fledge.plugins.north.common.common import *
 
 __author__ = "Rob Raesemann"
-__copyright__ = "Copyright (c) 2019 Raesemann Enterprises"
+__copyright__ = "Copyright (c) 2020 Raesemann Enterprises"
 __license__ = "Apache 2.0"
 __version__ = "${VERSION}"
 
 _LOGGER = logger.setup(__name__)
-#_LOGGER.setLevel(logging.INFO)
 
 _CONFIG_CATEGORY_NAME = "KAFKA"
-_CONFIG_CATEGORY_DESCRIPTION = "Kafka North Plugin"
+_CONFIG_CATEGORY_DESCRIPTION = "Kafka Python North Plugin"
 
 _DEFAULT_CONFIG = {
     'plugin': {
          'description': 'Kafka North Plugin',
          'type': 'string',
-         'default': 'kafka_north',
+         'default': 'kafka_python',
          'readonly': 'true'
     },
     'bootstrap_servers': {
@@ -125,7 +122,6 @@ class KafkaNorthPlugin(object):
                 read["asset"] = p['asset_code']
                 read["readings"] = p['reading']
                 read["timestamp"] = p['user_ts']
-                read["key"] = str(uuid.uuid4())  # p['read_key']
                 payload_block.append(read)
 
             num_sent = await self._send_payloads(payload_block)
