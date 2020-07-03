@@ -6,8 +6,9 @@ This plugin is a good example of a North plugin built in Python. There is also a
 
 ## Installation
 
-Copy the python/fledge/plugins/north/kafka_python directory to /usr/local/fledge/python/fledge/python/plugins/north/
-pip3 install -Ir python/requirements-kafka_python.txt
+1) Copy the python/fledge/plugins/north/kafka_python directory to /usr/local/fledge/python/fledge/python/plugins/north/
+
+2) pip3 install -Ir python/requirements-kafka_python.txt
 
 ## Testing
 
