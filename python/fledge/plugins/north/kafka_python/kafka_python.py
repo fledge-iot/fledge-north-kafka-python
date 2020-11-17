@@ -60,7 +60,8 @@ _DEFAULT_CONFIG = {
         "type": "string",
         "default": ".[]",
         'order': '5',
-        'displayName': 'Filter Rule'
+        'displayName': 'Filter Rule',
+        "validity": "applyFilter == \"true\""
     }
 }
 
