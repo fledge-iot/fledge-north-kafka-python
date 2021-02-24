@@ -60,14 +60,15 @@ _DEFAULT_CONFIG = {
         "type": "string",
         "default": ".[]",
         'order': '5',
-        'displayName': 'Filter Rule'
+        'displayName': 'Filter Rule',
+        "validity": "applyFilter == \"true\""
     }
 }
 
 def plugin_info():
     return {
         'name': 'kafka_north_python',
-        'version': '1.8.2',
+        'version': '1.9.0',
         'type': 'north',
         'interface': '1.0',
         'config': _DEFAULT_CONFIG
