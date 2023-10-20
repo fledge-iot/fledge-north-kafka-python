@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-""" Kafka North plugin"""
-from kafka import KafkaProducer
-from kafka.errors import KafkaError
+"""Kafka North plugin"""
 import asyncio
 import json
+import numpy as np
+
+from kafka import KafkaProducer
+from kafka.errors import KafkaError
 
 from fledge.common import logger
 from fledge.plugins.north.common.common import *
@@ -15,9 +17,6 @@ __license__ = "Apache 2.0"
 __version__ = "${VERSION}"
 
 _LOGGER = logger.setup(__name__)
-
-_CONFIG_CATEGORY_NAME = "KAFKA"
-_CONFIG_CATEGORY_DESCRIPTION = "Kafka Python North Plugin"
 
 _DEFAULT_CONFIG = {
     'plugin': {
@@ -44,45 +43,46 @@ _DEFAULT_CONFIG = {
          "description": "Source of data to be sent on the stream. May be either readings or statistics.",
          "type": "enumeration",
          "default": "readings",
-         "options": [ "readings", "statistics" ],
+         "options": ["readings", "statistics"],
          'order': '3',
          'displayName': 'Source'
     }
 }
 
+
 def plugin_info():
     return {
         'name': 'kafka_north_python',
-        'version': '2.1.0',
+        'version': '2.2.0',
         'type': 'north',
         'interface': '1.0',
         'config': _DEFAULT_CONFIG
     }
 
+
 def plugin_init(data):
-    _LOGGER.info('Initializing Kafka North Python Plugin')
     global kafka_north, config
     kafka_north = KafkaNorthPlugin()
     config = data
-    _LOGGER.info(f'Initializing plugin with boostrap servers: {config["bootstrap_servers"]["value"]} and topic: {config["kafka_topic"]["value"]}')
     return config
+
 
 async def plugin_send(data, payload, stream_id):
     try:
-        _LOGGER.info(f'Kafka North Python - plugin_send: {stream_id}')
         is_data_sent, new_last_object_id, num_sent = await kafka_north.send_payloads(payload)
-    except asyncio.CancelledError as ex:
-        _LOGGER.exception(f'Exception occurred in plugin_send: {ex}')
+    except asyncio.CancelledError:
+        pass
     else:
-        _LOGGER.info('payload sent successfully')
         return is_data_sent, new_last_object_id, num_sent
+
 
 def plugin_shutdown(data):
     pass
 
-# TODO: North plugin can not be reconfigured? (per callback mechanism)
+
 def plugin_reconfigure():
     pass
+
 
 class KafkaNorthPlugin(object):
     """ North Kafka Plugin """
@@ -97,41 +97,33 @@ class KafkaNorthPlugin(object):
         is_data_sent = False
         last_object_id = 0
         num_sent = 0
-
         try:
-            _LOGGER.info('processing payloads')
             payload_block = list()
-
             for p in payloads:
-                last_object_id = p["id"]
                 read = dict()
                 read["asset"] = p['asset_code']
-                read["readings"] = p['reading']
+                last_object_id = p["id"]
+                for k, v in p['reading'].items():
+                    if not isinstance(v, np.ndarray):
+                        read["readings"] = p['reading']
                 read["timestamp"] = p['user_ts']
                 payload_block.append(read)
-
             num_sent = await self._send_payloads(payload_block)
-            _LOGGER.info('payloads sent: {num_sent}')
             is_data_sent = True
         except Exception as ex:
-            _LOGGER.exception("Data could not be sent, %s", str(ex))
-
+            _LOGGER.exception(ex, "Data could not be sent!")
         return is_data_sent, last_object_id, num_sent
 
     async def _send_payloads(self, payload_block):
         """ send a list of block payloads"""
         num_count = 0
         try:
-            producer = KafkaProducer(bootstrap_servers=config["bootstrap_servers"]["value"], 
-                api_version=(0, 11),
-                value_serializer=lambda x: json.dumps(x).encode('utf-8'))
-
-            _LOGGER.info(f'Using Boostrap Server: {config["bootstrap_servers"]["value"]} Topic: {config["kafka_topic"]["value"]}')
-
+            producer = KafkaProducer(bootstrap_servers=config["bootstrap_servers"]["value"],
+                                     api_version=(0, 11), value_serializer=lambda x: json.dumps(x).encode('utf-8'))
             await self._send(producer, payload_block)
         except Exception as ex:
             _LOGGER.exception(f'Exception sending payloads: {ex}')
-        else: 
+        else:
             num_count += len(payload_block)
         return num_count
 
